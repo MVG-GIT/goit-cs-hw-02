@@ -1,0 +1,26 @@
+services:
+  db:
+    image: postgres:15
+    container_name: hw02_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 567234
+      POSTGRES_DB: hw02
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  app:
+    build: .
+    container_name: hw02_app
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://postgres:567234@db:5432/hw02
+    ports:
+      - "8000:8000"
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+
+volumes:
+  postgres_data:
